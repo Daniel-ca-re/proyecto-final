@@ -9,11 +9,31 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    angry_bee.cpp \
+    bala.cpp \
+    base.cpp \
+    bee.cpp \
+    friction_layer.cpp \
+    frog.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    maty.cpp \
+    platform.cpp \
+    tadpole.cpp \
+    tong.cpp
 
 HEADERS += \
-    mainwindow.h
+    angry_bee.h \
+    bala.h \
+    base.h \
+    bee.h \
+    friction_layer.h \
+    frog.h \
+    mainwindow.h \
+    maty.h \
+    platform.h \
+    tadpole.h \
+    tong.h
 
 FORMS += \
     mainwindow.ui

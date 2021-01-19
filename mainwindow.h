@@ -45,12 +45,17 @@ private:
     QList <tadpole*> tadpoles;
     QList <bala*> balas;
     QTimer * timer;
-    maty *player;
+    QList <maty *> players;
     bool can_he_move();
     void collitions();
     void get_started();
     float timestep=0.4;
     bool started;
+    void delete_all();
+    void start();
+    void npc_collitions();
+    void player_collitions();
+    void set_life();
 
 private slots:
     void on_pushButton_clicked();

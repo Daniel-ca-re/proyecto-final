@@ -6,7 +6,7 @@
 class platform : public friction_layer
 {
 private:
-    char type;
+
 public:
     friction_layer* fake_layer;
     platform();
@@ -15,6 +15,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget =nullptr);
     char where_is_it(std::array<float, 2> p);
     float H;
+    char type;
 };
 
 #endif // PLATFORM_H

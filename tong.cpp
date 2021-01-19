@@ -39,3 +39,16 @@ void tong::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->setBrush(Qt::magenta);
     painter->drawEllipse(boundingRect());
 }
+
+char tong::where_is_it(std::array<float, 2> p)
+{
+    if (p[0]<pos[0])
+    {
+       return 'a';
+    }
+    else if(p[0]>pos[0])
+    {
+        return 'd';
+    }
+
+}

@@ -51,4 +51,6 @@ maty::maty(float d, float h, std::array<float, 2> p, float ay)
     setPos(pos[0],-pos[1]);
     vel={0,0};
     ry=ly/2;
+    rx=lx/2;
+    life=100;
 }

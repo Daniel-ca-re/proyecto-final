@@ -6,7 +6,6 @@
 class maty : public base
 {
 private:
-    int life;
     float vx=5;
     float vy=20;
 public:
@@ -18,6 +17,8 @@ public:
     void left();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget =nullptr);
     float ry;
+    float rx;
+    int life;
 
 
 };

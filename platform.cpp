@@ -7,7 +7,7 @@ platform::platform()
 
 void platform::Advance(float t)
 {
-    friction_layer::Advance(t);
+    base::Advance(t);
     fake_layer->setpos(pos[0],pos[1]+3);
 }
 
@@ -58,7 +58,9 @@ platform::platform(float l, float h, std::array<float, 2> p, std::array<float, 2
     setPos(pos[0],-pos[1]);
     p[1]+=3;
     fake_layer = new friction_layer(l,3,p);
+    ace={0,0};
     type=t;
     H=h;
+    L=l;
 
 }

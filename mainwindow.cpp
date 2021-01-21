@@ -1,3 +1,4 @@
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "bee.h"
@@ -7,6 +8,9 @@
 #include "qiterator.h"
 #include "iterator"
 #include "iostream"
+#include <cstdlib>
+#include "math.h"
+
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -21,7 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer = new QTimer();
     QObject::connect(timer,SIGNAL(timeout()),this,SLOT(ADVANCE()));
-    timer->start(1000/120);
+    timer->start(1000/60);
+
+    TIMER = new QTimer();
+    QObject::connect(TIMER,SIGNAL(timeout()),this,SLOT(second()));
+    TIMER->start(1000);
 
 
 
@@ -87,35 +95,118 @@ bool MainWindow::can_he_move()
     return false;
 }
 
+void MainWindow::tadpole_generator()
+{
+    for(int i=0;i<tadpoles.size();i++)
+    {
+        if(tadpoles.at(i)->getpos()[0] < -100 || tadpoles.at(i)->getpos()[0]>1200)
+        {
+            scene->removeItem(tadpoles.at(i));
+            tadpoles.removeAt(i);
+            i--;
+        }
+    }
+    int v[2]={28,40};
+
+    int angle[2]={84,127};
+    float pos [2]={-1,-1};
+    float randvel=((rand()% (10*(v[1]-v[0])) )/10) +v[0];
+    float randang=((rand()% (10*(angle[1]-angle[0])) )/10) + angle[0];
+    while (!(0<pos[0] && pos[0]<1150 && 350<pos[1] && pos[1]<630))
+    {
+        randvel=((rand()% (10*(v[1]-v[0])) )/10) +v[0];
+        randang=((rand()% (10*(angle[1]-angle[0])) )/10) + angle[0];
+        pos[0]=randvel*(randvel/0.8)*cos(3.1416*randang/180) + 1000;
+        pos[1]=randvel*(randvel/0.8)*sin(3.1416*randang/180) - 100 -0.4*pow(randvel/0.8,2);
+    }
+    tadpoles.push_back(new tadpole(10,-0.8,{1000,-100},{ randvel*float(cos(3.1416*randang/180)) , randvel*float(sin(3.1416*randang/180)) }) );
+    scene->addItem(tadpoles.back());
+}
+
+void MainWindow::Abee_genetarot()
+{
+    Abees.push_back(new angry_bee(20,{1180,float(rand()%450+100)},5));
+    scene->addItem(Abees.back());
+}
+
+void MainWindow::platform_generator()
+{
+    if(platforms.at(0)->getpos()[0]+platforms.at(0)->L < -100)
+    {
+        scene->removeItem(platforms.at(0));
+        platforms.removeAt(0);
+    }
+    if((rand()%2==0))
+    {
+        platforms.push_back(new platform(rand()%160+100,10,{1200,float(rand()%280+120)},{-1,0},'g'));
+        scene->addItem(platforms.back());
+    }
+}
+
+void MainWindow::floor_generator()
+{
+    if(floor.at(0)->getpos()[0]+floor.at(0)->L < -100)
+    {
+        scene->removeItem(floor.at(0));
+        floor.removeAt(0);
+    }
+    if((floor.back()->getpos()[0]+floor.back()->L) < 1400)
+    {
+        if (floor.back()->type=='w')
+        {
+                floor.push_back(new platform(rand()%400+300,15,{floor.back()->getpos()[0]+floor.back()->L,8},{-1,0},'g'));
+        }
+        else
+        {
+            if((rand()%3)%2==0)
+            {
+                floor.push_back(new platform(rand()%400+300,15,{floor.back()->getpos()[0]+floor.back()->L,8},{-1,0},'g'));
+            }
+            else
+            {
+                floor.push_back(new platform(rand()%100+300,15,{floor.back()->getpos()[0]+floor.back()->L,8},{-1,0},'w'));
+            }
+        }
+        scene->addItem(floor.back());
+    }
+}
+
 void MainWindow::collitions()
 {
         for(int i =0;i!=floor.size();i++)
         {
             if (floor.at(i)->collidesWithItem(players.at(0)))
             {
-                char state=floor.at(i)->where_is_it(players.at(0)->getpos());
-                if(floor.at(i)->fake_layer->collidesWithItem(players.at(0)) && floor.at(i)->collidesWithItem(players.at(0)) && state=='w')
+                if(floor.at(i)->type=='g' )
                 {
-                     auto p = players.at(0)->getpos();
-                     auto v = players.at(0)->getvel();
-                     players.at(0)->setvel(v[0],0);
-                     players.at(0)->setpos(p[0],floor.at(i)->getpos()[1]+players.at(0)->ry);
-                     break;
+                    char state=floor.at(i)->where_is_it(players.at(0)->getpos());
+                    if(floor.at(i)->fake_layer->collidesWithItem(players.at(0)) && floor.at(i)->collidesWithItem(players.at(0)) && state=='w')
+                    {
+                         auto p = players.at(0)->getpos();
+                         auto v = players.at(0)->getvel();
+                         players.at(0)->setvel(v[0],0);
+                         players.at(0)->setpos(p[0],floor.at(i)->getpos()[1]+players.at(0)->ry);
+                         break;
+                    }
+                    else if(floor.at(i)->collidesWithItem(players.at(0)) && state=='s')
+                    {
+                        auto p = players.at(0)->getpos();
+                        auto v = players.at(0)->getvel();
+                        players.at(0)->setvel(v[0],0);
+                        players.at(0)->setpos(p[0],floor.at(i)->getpos()[1]+players.at(0)->ry);
+                        break;
+                    }
+                    else if(floor.at(i)->collidesWithItem(players.at(0)) && (state=='a'||state=='d') && (players.at(0)->getpos()[1] < floor.at(i)->getpos()[1] + players.at(0)->ry*0.5 ))
+                    {
+                        auto v = players.at(0)->getvel();
+                        players.at(0)->setvel(-v[0],v[1]);
+                        players.at(0)->Advance(timestep);
+                        break;
+                    }
                 }
-                else if(floor.at(i)->collidesWithItem(players.at(0)) && state=='s')
+                else
                 {
-                    auto p = players.at(0)->getpos();
-                    auto v = players.at(0)->getvel();
-                    players.at(0)->setvel(v[0],0);
-                    players.at(0)->setpos(p[0],floor.at(i)->getpos()[1]+players.at(0)->ry);
-                    break;
-                }
-                else if(floor.at(i)->collidesWithItem(players.at(0)) && (state=='a'||state=='d'))
-                {
-                    auto v = players.at(0)->getvel();
-                    players.at(0)->setvel(-v[0],v[1]);
-                    players.at(0)->Advance(timestep);
-                    break;
+                    players.at(0)->life=0;
                 }
             }
 
@@ -192,7 +283,7 @@ void MainWindow::delete_all()
     while(tadpoles.size()!=0)
     {
         scene->removeItem(tadpoles.at(0));
-        platforms.removeAt(0);
+        tadpoles.removeAt(0);
     }
     while(players.size()!=0)
     {
@@ -206,16 +297,16 @@ void MainWindow::start()
 {
     players.push_back(new maty(30,60,{40,70},-0.8));
     scene->addItem(players.back());
-    bees.push_back(new bee(80,20,{1180,500},-5));
+    bees.push_back(new bee(50,20,{1180,500},-5));
     scene->addItem(bees.back());
     Abees.push_back(new angry_bee(20,{1180,100},5));
     scene->addItem(Abees.back());
-    floor.push_back(new platform(1400,10,{0,8},{0,0},'g'));
+    floor.push_back(new platform(1400,15,{0,8},{-1,0},'g'));
     scene->addItem(floor.back());
     frogs.push_back(new frog(80,{1150,50},-150));
     scene->addItem(frogs.back()->lengua);
     scene->addItem(frogs.back());
-    platforms.push_back(new platform(300,10,{0,150},{1,0},'g'));
+    platforms.push_back(new platform(230,10,{1200,150},{-1,0},'g'));
     scene->addItem(platforms.back());
 }
 
@@ -256,6 +347,21 @@ void MainWindow::npc_collitions()
         for(int ii=0; ii!=platforms.size();ii++)
         {
             if(platforms.at(ii)->collidesWithItem(tadpoles.at(i)))
+            {
+                scene->removeItem(tadpoles.at(i));
+                tadpoles.removeAt(i);
+                i--;
+                break;
+
+            }
+
+        }
+    }
+    for(int i=0; i!=tadpoles.size();i++)
+    {
+        for(int ii=0; ii!=floor.size();ii++)
+        {
+            if(floor.at(ii)->collidesWithItem(tadpoles.at(i)) && floor.at(ii)->type=='g')
             {
                 scene->removeItem(tadpoles.at(i));
                 tadpoles.removeAt(i);
@@ -313,7 +419,7 @@ void MainWindow::player_collitions()
         if(players.at(0)->collidesWithItem(frogs.at(i)->lengua))
         {
             auto vel=players.at(0)->getvel();
-            players.at(0)->life-=10;
+            players.at(0)->life-=5;
             if('a'==frogs.at(i)->lengua->where_is_it(players.at(0)->getpos()))
             {
                 players.at(0)->setvel(vel[0]-5,vel[1]);
@@ -351,6 +457,7 @@ void MainWindow::set_life()
         {
             delete_all();
             started=false;
+            ui->progressBar->setValue(0);
         }
 }
 
@@ -359,7 +466,7 @@ void MainWindow::ADVANCE()
     if (started)
     {
 
-        float t =timestep;
+        float t =2*timestep;
         for(int i =0;i!=bees.size();i++)
         {
             bees.at(i)->Advance(t);
@@ -374,7 +481,7 @@ void MainWindow::ADVANCE()
         }
         for(int i =0;i!=tadpoles.size();i++)
         {
-            tadpoles.at(i)->Advance(t);
+            tadpoles.at(i)->Advance(t*0.9);
         }
         for(int i =0;i!=balas.size();i++)
         {
@@ -394,6 +501,30 @@ void MainWindow::ADVANCE()
         }
         collitions();
         set_life();
+    }
+}
+
+void MainWindow::second()
+{
+    if (started)
+    {
+        time_passed=(++time_passed)%101;
+        if(time_passed%1==0)
+        {
+            floor_generator();
+        }
+        if(time_passed%1==0)
+        {
+            tadpole_generator();
+        }
+        if(time_passed%10==0)
+        {
+            platform_generator();
+        }
+        if((5+time_passed)%10==0)
+        {
+            //Abee_genetarot();
+        }
     }
 }
 

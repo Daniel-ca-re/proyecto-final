@@ -31,6 +31,7 @@ public:
 public slots:
 
     void ADVANCE();
+    void second();
 
 
 private:
@@ -46,16 +47,32 @@ private:
     QList <bala*> balas;
     QTimer * timer;
     QList <maty *> players;
-    bool can_he_move();
-    void collitions();
+    QTimer * TIMER;
+
+
     void get_started();
-    float timestep=0.4;
+    float timestep=0.4;   
     bool started;
     void delete_all();
     void start();
+    void set_life();
+    long int time_passed;
+
+
+    void collitions();
     void npc_collitions();
     void player_collitions();
-    void set_life();
+    bool can_he_move();
+
+
+    void tadpole_generator();
+    //void frog_genetarot();
+    //void bee_genetarot();
+    void Abee_genetarot();
+    void platform_generator();
+    void floor_generator();
+
+
 
 private slots:
     void on_pushButton_clicked();

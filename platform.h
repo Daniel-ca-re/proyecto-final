@@ -16,6 +16,7 @@ public:
     char where_is_it(std::array<float, 2> p);
     float H;
     char type;
+    float L;
 };
 
 #endif // PLATFORM_H

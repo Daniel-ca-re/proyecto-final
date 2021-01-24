@@ -27,10 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(timer,SIGNAL(timeout()),this,SLOT(ADVANCE()));
     timer->start(1000/60);
 
-    TIMER = new QTimer();
-    QObject::connect(TIMER,SIGNAL(timeout()),this,SLOT(second()));
-    TIMER->start(1000);
-
 
 
 
@@ -47,6 +43,8 @@ void MainWindow::on_pushButton_clicked()
     delete_all();
     start();
     started=true;
+    past=0;
+    puntaje=0;
 
 }
 void MainWindow::keyPressEvent(QKeyEvent *evento)
@@ -73,7 +71,22 @@ void MainWindow::keyPressEvent(QKeyEvent *evento)
     {
         players.at(0)->right();
     }
-
+    if(evento->key()==Qt::Key_I)
+    {
+        bala_generator(0,15);
+    }
+    if(evento->key()==Qt::Key_K)
+    {
+        bala_generator(0,-15);
+    }
+    if(evento->key()==Qt::Key_L)
+    {
+        bala_generator(15,0);
+    }
+    if(evento->key()==Qt::Key_J)
+    {
+        bala_generator(-15,0);
+    }
 }
 
 bool MainWindow::can_he_move()
@@ -93,6 +106,107 @@ bool MainWindow::can_he_move()
         }
     }
     return false;
+}
+
+void MainWindow::Bhit()
+{
+    for(int i=0;i<balas.size();i++)
+    {
+        if(balas.at(i)->getace()[1]>900 || balas.at(i)->getace()[0]>1200  || balas.at(i)->getace()[0]<-100 )
+        {
+            scene->removeItem(balas.at(i));
+            balas.removeAt(i);
+            i--;
+        }
+    }
+    for(int i=0;i<balas.size();i++)
+    {
+        for(int ii=0; ii<bees.size();ii++)
+        {
+            if(balas.at(i)->collidesWithItem(bees.at(ii)))
+            {
+                scene->removeItem(balas.at(i));
+                scene->removeItem(bees.at(ii));
+                bees.removeAt(ii);
+                balas.removeAt(i);
+                i--;
+                ii--;
+                puntaje+=10;
+            }
+        }
+
+    }
+    for(int i=0;i<balas.size();i++)
+    {
+        for(int ii=0; ii<Abees.size();ii++)
+        {
+            if(balas.at(i)->collidesWithItem(Abees.at(ii)))
+            {
+                scene->removeItem(balas.at(i));
+                scene->removeItem(Abees.at(ii));
+                Abees.removeAt(ii);
+                balas.removeAt(i);
+                i--;
+                ii--;
+                puntaje+=10;
+            }
+        }
+
+    }
+    for(int i=0;i<balas.size();i++)
+    {
+        for(int ii=0; ii<frogs.size();ii++)
+        {
+            if(balas.at(i)->collidesWithItem(frogs.at(ii)))
+            {
+                scene->removeItem(balas.at(i));
+                frogs.at(ii)->life--;
+                balas.removeAt(i);
+                i--;
+            }
+        }
+
+    }
+    for(int i=0;i<balas.size();i++)
+    {
+        for(int ii=0; ii<frogs.size();ii++)
+        {
+            if(balas.at(i)->collidesWithItem(frogs.at(ii)->lengua))
+            {
+                scene->removeItem(balas.at(i));
+                balas.removeAt(i);
+                i--;
+            }
+        }
+
+    }
+    for(int i=0;i<balas.size();i++)
+    {
+        for(int ii=0; ii<platforms.size();ii++)
+        {
+            if(balas.at(i)->collidesWithItem(platforms.at(ii)))
+            {
+                scene->removeItem(balas.at(i));
+                balas.removeAt(i);
+                i--;
+            }
+        }
+
+    }
+    for(int i=0;i<balas.size();i++)
+    {
+        for(int ii=0; ii<floor.size();ii++)
+        {
+            if(balas.at(i)->collidesWithItem(floor.at(ii)))
+            {
+                scene->removeItem(balas.at(i));
+                balas.removeAt(i);
+                i--;
+            }
+        }
+
+    }
+
 }
 
 void MainWindow::tadpole_generator()
@@ -121,6 +235,22 @@ void MainWindow::tadpole_generator()
     }
     tadpoles.push_back(new tadpole(10,-0.8,{1000,-100},{ randvel*float(cos(3.1416*randang/180)) , randvel*float(sin(3.1416*randang/180)) }) );
     scene->addItem(tadpoles.back());
+}
+
+void MainWindow::frog_genetarot()
+{
+    if(frogs.size()==0)
+    {
+        frogs.push_back(new frog(80,{1150,50},-150));
+        scene->addItem(frogs.back()->lengua);
+        scene->addItem(frogs.back());
+    }
+}
+
+void MainWindow::bee_genetarot()
+{
+    bees.push_back(new bee(40,20,{1180,float(rand()%300+100)},-5));
+    scene->addItem(bees.back());
 }
 
 void MainWindow::Abee_genetarot()
@@ -297,15 +427,12 @@ void MainWindow::start()
 {
     players.push_back(new maty(30,60,{40,70},-0.8));
     scene->addItem(players.back());
-    bees.push_back(new bee(50,20,{1180,500},-5));
+    bees.push_back(new bee(40,20,{1180,500},-5));
     scene->addItem(bees.back());
     Abees.push_back(new angry_bee(20,{1180,100},5));
     scene->addItem(Abees.back());
     floor.push_back(new platform(1400,15,{0,8},{-1,0},'g'));
     scene->addItem(floor.back());
-    frogs.push_back(new frog(80,{1150,50},-150));
-    scene->addItem(frogs.back()->lengua);
-    scene->addItem(frogs.back());
     platforms.push_back(new platform(230,10,{1200,150},{-1,0},'g'));
     scene->addItem(platforms.back());
 }
@@ -459,6 +586,18 @@ void MainWindow::set_life()
             started=false;
             ui->progressBar->setValue(0);
         }
+        for(int i =0; i<frogs.size();i++)
+        {
+            if(frogs.at(i)->life==0)
+            {
+                scene->removeItem(frogs.at(i)->lengua);
+                scene->removeItem(frogs.at(i));
+                frogs.removeAt(i);
+                i--;
+                puntaje+=120;
+            }
+        }
+        ui->lcdNumber->display(puntaje);
 }
 
 void MainWindow::ADVANCE()
@@ -501,6 +640,13 @@ void MainWindow::ADVANCE()
         }
         collitions();
         set_life();
+        Bhit();
+        past=(++past)%61;
+        if(past==0)
+        {
+            second();
+        }
+
     }
 }
 
@@ -521,11 +667,26 @@ void MainWindow::second()
         {
             platform_generator();
         }
-        if((5+time_passed)%10==0)
+        if((5+time_passed)%13==0)
         {
-            //Abee_genetarot();
+            Abee_genetarot();
+        }
+        if((7+time_passed)%10==0)
+        {
+            bee_genetarot();
+        }
+        if((7+time_passed)%40==0)
+        {
+            frog_genetarot();
         }
     }
 }
+
+void MainWindow::bala_generator(float vx, float vy)
+{
+    balas.push_back(new bala(10, players.at(0)->getpos() , {vx,vy}));
+    scene->addItem(balas.back());
+}
+
 
 

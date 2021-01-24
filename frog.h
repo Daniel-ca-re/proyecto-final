@@ -7,7 +7,7 @@
 class frog :public base
 {
 private:
-    int life;
+
 public:
     frog();
     frog(float ra, std::array<float,2> p, float vx);
@@ -16,6 +16,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget =nullptr);
     void setlife(int vida);
     void gethit(int golpe);
+    int life;
 };
 
 #endif // FROG_H

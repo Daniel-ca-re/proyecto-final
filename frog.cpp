@@ -39,4 +39,5 @@ frog::frog(float ra, std::array<float, 2> p, float vx)
     setPos(pos[0],-pos[1]);
     p[1];
     lengua=new tong(ra/2, p, vx);
+    life=30;
 }

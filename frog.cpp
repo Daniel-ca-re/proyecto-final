@@ -8,6 +8,7 @@ frog::frog()
 void frog::Advance(float t)
 {
     lengua->Advance(t);
+    lengua2= new platform(-lengua->getpos()[0]+pos[0],6,{lengua->getpos()[0],lengua->getpos()[1]+3},{0,0},'t');
 }
 
 void frog::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -40,4 +41,5 @@ frog::frog(float ra, std::array<float, 2> p, float vx)
     p[1];
     lengua=new tong(ra/2, p, vx);
     life=30;
+    lengua2= new platform(lengua->getpos()[0]-pos[0],2,lengua->getpos(),{0,0},'t');
 }

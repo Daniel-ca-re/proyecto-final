@@ -23,6 +23,11 @@ void platform::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         painter->setBrush(Qt::green);
         painter->drawRect(boundingRect());
     }
+    else
+    {
+        painter->setBrush(Qt::magenta);
+        painter->drawRect(boundingRect());
+    }
 }
 
 char platform::where_is_it(std::array<float, 2> p)
@@ -62,5 +67,6 @@ platform::platform(float l, float h, std::array<float, 2> p, std::array<float, 2
     type=t;
     H=h;
     L=l;
+    fake_layer->setpos(pos[0],pos[1]+3);
 
 }

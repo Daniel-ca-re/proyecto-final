@@ -20,7 +20,8 @@ SOURCES += \
     maty.cpp \
     platform.cpp \
     tadpole.cpp \
-    tong.cpp
+    tong.cpp \
+    txtinfo.cpp
 
 HEADERS += \
     angry_bee.h \
@@ -33,7 +34,8 @@ HEADERS += \
     maty.h \
     platform.h \
     tadpole.h \
-    tong.h
+    tong.h \
+    txtinfo.h
 
 FORMS += \
     mainwindow.ui

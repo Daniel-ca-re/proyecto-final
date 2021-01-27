@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     timer = new QTimer();
     QObject::connect(timer,SIGNAL(timeout()),this,SLOT(ADVANCE()));
     timer->start(1000/60);
+    scores= txtinfo("../proyecto_final/BD/Scores.txt");
 
 
 
@@ -46,13 +47,14 @@ void MainWindow::on_pushButton_clicked()
     past=0;
     puntaje=0;
 
+
 }
 void MainWindow::keyPressEvent(QKeyEvent *evento)
 {
-    if(can_he_move())
+    if(evento->key()==Qt::Key_W)
     {
 
-        if(evento->key()==Qt::Key_W)
+        if(can_he_move())
         {
             players.at(0)->up();
         }
@@ -105,6 +107,13 @@ bool MainWindow::can_he_move()
              return true;
         }
     }
+    for(int i =0;i!=frogs.size();i++)
+    {
+        if(frogs.at(i)->lengua2->fake_layer->collidesWithItem(players.at(0)))
+        {
+             return true;
+        }
+    }
     return false;
 }
 
@@ -112,7 +121,7 @@ void MainWindow::Bhit()
 {
     for(int i=0;i<balas.size();i++)
     {
-        if(balas.at(i)->getace()[1]>900 || balas.at(i)->getace()[0]>1200  || balas.at(i)->getace()[0]<-100 )
+        if(balas.at(i)->getpos()[1]>900 || balas.at(i)->getpos()[0]>1200  || balas.at(i)->getpos()[0]<-100 )
         {
             scene->removeItem(balas.at(i));
             balas.removeAt(i);
@@ -243,6 +252,7 @@ void MainWindow::frog_genetarot()
     {
         frogs.push_back(new frog(80,{1150,50},-150));
         scene->addItem(frogs.back()->lengua);
+        scene->addItem(frogs.back()->lengua2);
         scene->addItem(frogs.back());
     }
 }
@@ -352,7 +362,6 @@ void MainWindow::collitions()
                      auto v = players.at(0)->getvel();
                      players.at(0)->setvel(v[0],0);
                      players.at(0)->setpos(p[0],platforms.at(i)->getpos()[1]+players.at(0)->ry);
-                     std::cout<<'w'<<'\n';
                      break;
                 }
                 else if(platforms.at(i)->collidesWithItem(players.at(0)) && state=='s')
@@ -361,10 +370,39 @@ void MainWindow::collitions()
                     auto v = players.at(0)->getvel();
                     players.at(0)->setvel(v[0],0);
                     players.at(0)->setpos(p[0],platforms.at(i)->getpos()[1]-players.at(0)->ry-platforms.at(i)->H);
-                    std::cout<<'s'<<'\n';
                     break;
                 }
                 else if(platforms.at(i)->collidesWithItem(players.at(0)) && (state=='a'||state=='d') && (players.at(0)->getpos()[1] < platforms.at(i)->getpos()[1] + players.at(0)->ry*0.5 ))
+                {
+                    auto v = players.at(0)->getvel();
+                    players.at(0)->setvel(-v[0],v[1]);
+                    players.at(0)->Advance(timestep);
+                    break;
+                }
+            }
+        }
+        for(int i =0;i!=frogs.size();i++)
+        {
+            if (frogs.at(i)->lengua2->collidesWithItem(players.at(0)))
+            {
+                char state=frogs.at(i)->lengua2->where_is_it(players.at(0)->getpos());
+                if(frogs.at(i)->lengua2->fake_layer->collidesWithItem(players.at(0)) && frogs.at(i)->lengua2->collidesWithItem(players.at(0)) && state=='w')
+                {
+                     auto p = players.at(0)->getpos();
+                     auto v = players.at(0)->getvel();
+                     players.at(0)->setvel(v[0],0);
+                     players.at(0)->setpos(p[0],frogs.at(i)->lengua2->getpos()[1]+players.at(0)->ry);
+                     break;
+                }
+                else if(frogs.at(i)->lengua2->collidesWithItem(players.at(0)) && state=='s')
+                {
+                    auto p = players.at(0)->getpos();
+                    auto v = players.at(0)->getvel();
+                    players.at(0)->setvel(v[0],0);
+                    players.at(0)->setpos(p[0],frogs.at(i)->lengua2->getpos()[1]-players.at(0)->ry-frogs.at(i)->lengua2->H);
+                    break;
+                }
+                else if(frogs.at(i)->lengua2->collidesWithItem(players.at(0)) && (state=='a'||state=='d') && (players.at(0)->getpos()[1] < frogs.at(i)->lengua2->getpos()[1] + players.at(0)->ry*0.5 ))
                 {
                     auto v = players.at(0)->getvel();
                     players.at(0)->setvel(-v[0],v[1]);
@@ -408,6 +446,7 @@ void MainWindow::delete_all()
     {
         scene->removeItem(frogs.at(0));
         scene->removeItem(frogs.at(0)->lengua);
+        scene->removeItem(frogs.at(0)->lengua2);
         frogs.removeAt(0);
     }
     while(tadpoles.size()!=0)
@@ -420,7 +459,11 @@ void MainWindow::delete_all()
         scene->removeItem(players.at(0));
         players.removeAt(0);
     }
+    ui->lcdNumber_2->display(scores.info[0]);
+    ui->lcdNumber_3->display(scores.info[1]);
+    ui->lcdNumber_4->display(scores.info[2]);
 
+    std::cout<<"eliminad\n";
 }
 
 void MainWindow::start()
@@ -582,9 +625,12 @@ void MainWindow::set_life()
         ui->progressBar->setValue(players.at(0)->life);
         if (players.at(0)->life<=0)
         {
+            scores.addnew(puntaje);
+            scores.saveinfo();
             delete_all();
             started=false;
             ui->progressBar->setValue(0);
+
         }
         for(int i =0; i<frogs.size();i++)
         {
@@ -604,56 +650,86 @@ void MainWindow::ADVANCE()
 {
     if (started)
     {
-
+        started=false;
         float t =2*timestep;
-        for(int i =0;i!=bees.size();i++)
-        {
-            bees.at(i)->Advance(t);
-        }
-        for(int i =0;i!=Abees.size();i++)
-        {
-            Abees.at(i)->Advance(t,players.at(0)->getpos());
-        }
-        for(int i =0;i!=frogs.size();i++)
-        {
-            frogs.at(i)->Advance(t);
-        }
-        for(int i =0;i!=tadpoles.size();i++)
-        {
-            tadpoles.at(i)->Advance(t*0.9);
-        }
-        for(int i =0;i!=balas.size();i++)
-        {
-            balas.at(i)->Advance(t);
-        }
-        for(int i =0;i!=floor.size();i++)
-        {
-            floor.at(i)->Advance(t);
-        }
-        for(int i =0;i!=platforms.size();i++)
-        {
-            platforms.at(i)->Advance(t);
-        }
+        std::cout<<"avance pl \n";
         for(int i =0;i!=players.size();i++)
         {
             players.at(i)->Advance(t);
         }
-        collitions();
-        set_life();
+
+        std::cout<<"bhit \n";
         Bhit();
+
         past=(++past)%61;
         if(past==0)
         {
+            std::cout<<"second \n";
             second();
         }
+        std::cout<<"colitions \n";
+        collitions();
+
+
+        std::cout<<"avance b \n";
+        for(int i =0;i!=bees.size();i++)
+        {
+            std::cout<<i<<'/'<<bees.size()<<"\n";
+            bees.at(i)->Advance(t);
+        }
+        std::cout<<"avance a \n";
+        for(int i =0;i!=Abees.size();i++)
+        {
+            std::cout<<i<<'/'<<Abees.size()<<"\n";
+            Abees.at(i)->Advance(t,players.at(0)->getpos());
+        }
+        std::cout<<"avance f \n";
+        for(int i =0;i!=frogs.size();i++)
+        {
+            std::cout<<i<<'/'<<frogs.size()<<"\n";
+            scene->removeItem(frogs.at(i)->lengua2);
+            frogs.at(i)->Advance(t);
+            scene->addItem(frogs.at(i)->lengua2);
+        }
+        std::cout<<"avance t \n";
+        for(int i =0;i!=tadpoles.size();i++)
+        {
+            std::cout<<i<<'/'<<tadpoles.size()<<"\n";
+            tadpoles.at(i)->Advance(t*0.9);
+        }
+        std::cout<<"avance balas \n";
+        for(int i =0;i!=balas.size();i++)
+        {
+            std::cout<<i<<'/'<<balas.size()<<"\n";
+            balas.at(i)->Advance(t);
+
+        }
+        std::cout<<"avance floor \n";
+        for(int i =0;i!=floor.size();i++)
+        {
+            std::cout<<i<<'/'<<floor.size()<<"\n";
+            floor.at(i)->Advance(t);
+        }
+        std::cout<<"avance p \n";
+        for(int i =0;i!=platforms.size();i++)
+        {
+            std::cout<<i<<'/'<<platforms.size()<<"\n";
+            platforms.at(i)->Advance(t);
+        }
+        started=true;
+        std::cout<<"setlife \n";
+        set_life();
+
+
+
 
     }
 }
 
 void MainWindow::second()
 {
-    if (started)
-    {
+
+
         time_passed=(++time_passed)%101;
         if(time_passed%1==0)
         {
@@ -679,7 +755,6 @@ void MainWindow::second()
         {
             frog_genetarot();
         }
-    }
 }
 
 void MainWindow::bala_generator(float vx, float vy)

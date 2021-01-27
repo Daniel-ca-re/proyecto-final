@@ -2,6 +2,7 @@
 #define FROG_H
 #include "base.h"
 #include "tong.h"
+#include "platform.h"
 
 
 class frog :public base
@@ -12,6 +13,7 @@ public:
     frog();
     frog(float ra, std::array<float,2> p, float vx);
     tong *lengua;
+    platform *lengua2;
     void Advance(float t);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget =nullptr);
     void setlife(int vida);

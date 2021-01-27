@@ -7,6 +7,7 @@
 #include "tadpole.h"
 #include "maty.h"
 #include "bala.h"
+#include "txtinfo.h"
 
 #include <QMainWindow>
 #include <QGraphicsScene>
@@ -48,6 +49,7 @@ private:
     QTimer * timer;
     QList <maty *> players;
     int puntaje;
+    txtinfo scores;
 
 
     void get_started();

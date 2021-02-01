@@ -663,41 +663,33 @@ void MainWindow::ADVANCE()
     {
         started=false;
         float t =2*timestep;
-        std::cout<<"avance pl \n";
+
         for(int i =0;i!=players.size();i++)
         {
             players.at(i)->Advance(t);
         }
 
-        std::cout<<"bhit \n";
+
         Bhit();
 
         past=(++past)%61;
         if(past==0)
         {
-            std::cout<<"second \n";
             second();
         }
-        std::cout<<"colitions \n";
         collitions();
 
 
-        std::cout<<"avance b \n";
         for(int i =0;i!=bees.size();i++)
         {
-            std::cout<<i<<'/'<<bees.size()<<"\n";
             bees.at(i)->Advance(t);
         }
-        std::cout<<"avance a \n";
         for(int i =0;i!=Abees.size();i++)
         {
-            std::cout<<i<<'/'<<Abees.size()<<"\n";
             Abees.at(i)->Advance(t,players.at(0)->getpos());
         }
-        std::cout<<"avance f \n";
         for(int i =0;i!=frogs.size();i++)
         {
-            std::cout<<i<<'/'<<frogs.size()<<"\n";
             scene->removeItem(frogs.at(i)->lengua2);
             frogs.at(i)->Advance(t);
             scene->addItem(frogs.at(i)->lengua2);
@@ -706,33 +698,24 @@ void MainWindow::ADVANCE()
             scene->removeItem(frogs.at(i));
             scene->addItem(frogs.at(i));
         }
-        std::cout<<"avance t \n";
         for(int i =0;i!=tadpoles.size();i++)
         {
-            std::cout<<i<<'/'<<tadpoles.size()<<"\n";
             tadpoles.at(i)->Advance(t*0.9);
         }
-        std::cout<<"avance balas \n";
         for(int i =0;i!=balas.size();i++)
         {
-            std::cout<<i<<'/'<<balas.size()<<"\n";
             balas.at(i)->Advance(t);
 
         }
-        std::cout<<"avance floor \n";
         for(int i =0;i!=floor.size();i++)
         {
-            std::cout<<i<<'/'<<floor.size()<<"\n";
             floor.at(i)->Advance(t);
         }
-        std::cout<<"avance p \n";
         for(int i =0;i!=platforms.size();i++)
         {
-            std::cout<<i<<'/'<<platforms.size()<<"\n";
             platforms.at(i)->Advance(t);
         }
         started=true;
-        std::cout<<"setlife \n";
         scene->setBackgroundBrush(QPixmap(":/images/background.png"));
         set_life();
 

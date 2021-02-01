@@ -642,6 +642,7 @@ void MainWindow::set_life()
             if(frogs.at(i)->life==0)
             {
                 scene->removeItem(frogs.at(i)->lengua);
+                scene->removeItem(frogs.at(i)->lengua2);
                 scene->removeItem(frogs.at(i));
                 frogs.removeAt(i);
                 i--;

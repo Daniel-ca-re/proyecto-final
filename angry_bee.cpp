@@ -8,8 +8,19 @@ angry_bee::angry_bee()
 
 void angry_bee::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setBrush(Qt::red);
-    painter->drawEllipse(boundingRect());
+    painter->drawPixmap(-lx/2,-ly/2,*pixmap,columnas,filas,lx,ly);
+}
+
+void angry_bee::set_sprite(float px)
+{
+    if(pos[0]<px)
+    {
+        filas=1*25;
+    }
+    else
+    {
+        filas=0;
+    }
 }
 
 void angry_bee::Advance(float t, std::array<float, 2> p)
@@ -20,6 +31,12 @@ void angry_bee::Advance(float t, std::array<float, 2> p)
     pos[0]+=vel[0]*t;
     pos[1]+=vel[1]*t;
     setPos(pos[0],-pos[1]);
+    if((++c)%2==0)
+    {
+        columnas=(int(lx)+columnas)%112;
+    }
+    set_sprite(p[0]);
+    this->update(-lx/2,-ly/2,lx,ly);
 }
 
 angry_bee::angry_bee(float ra, std::array<float, 2> p, float V)
@@ -31,8 +48,11 @@ angry_bee::angry_bee(float ra, std::array<float, 2> p, float V)
     vel[0]=0;
     vel[1]=0;
     pos=p;
-    lx=ra;
-    ly=ra;
+    lx=28;
+    ly=25;
     setPos(pos[0],-pos[1]);
+    columnas=0;
+    filas=0;
+    pixmap= new QPixmap(":/images/Abee.png");
 }
 

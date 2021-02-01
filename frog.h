@@ -19,6 +19,9 @@ public:
     void setlife(int vida);
     void gethit(int golpe);
     int life;
+    QPixmap *pixmap;
+    void sprintstate();
+    int columnas,filas;
 };
 
 #endif // FROG_H

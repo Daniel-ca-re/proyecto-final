@@ -3,10 +3,13 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include <array>
+#include <QPixmap>
+#include <QTimer>
 
 
 class base: public QGraphicsItem
 {
+
 protected:
 
     float mass;

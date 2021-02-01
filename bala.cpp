@@ -12,8 +12,7 @@ QRectF bala::boundingRect() const
 
 void bala::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setBrush(Qt::black);
-    painter->drawEllipse(boundingRect());
+    painter->drawPixmap(-lx/2,-ly/2,*pixmap,0,0,lx,ly);
 }
 
 bala::bala(float ra, std::array<float, 2> p, std::array<float, 2> v)
@@ -23,15 +22,9 @@ bala::bala(float ra, std::array<float, 2> p, std::array<float, 2> v)
     ace[1]=0;
     vel=v;
     pos=p;
-    if(v[1]==0)
-    {
-        lx=2*ra;
-        ly=ra;
-    }
-    else
-    {
-        lx=ra;
-        ly=2*ra;
-    }
+    lx=20;
+    ly=20;
     setPos(pos[0],-pos[1]);
+    pixmap= new QPixmap(":/images/bala.png");
+
 }

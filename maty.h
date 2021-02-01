@@ -1,6 +1,10 @@
 #ifndef MATY_H
 #define MATY_H
 #include "base.h"
+#include <QPixmap>
+#include <QTimer>
+#include <QObject>
+#include <QGraphicsItem>
 
 
 class maty : public base
@@ -19,6 +23,12 @@ public:
     float ry;
     float rx;
     int life;
+    explicit maty( QObject *parent = nullptr);
+    QPixmap *pixmap;
+    void sprintstate();
+    int columnas,filas;
+    void Advance(float t);
+
 
 
 };

@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(timer,SIGNAL(timeout()),this,SLOT(ADVANCE()));
     timer->start(1000/60);
     scores= txtinfo("../proyecto_final/BD/Scores.txt");
+    Bees_spawn=10;
+    Abees_spawn=13;
+    puntajefrontera=150;
 
 
 
@@ -46,6 +49,7 @@ void MainWindow::on_pushButton_clicked()
     started=true;
     past=0;
     puntaje=0;
+    scene->setBackgroundBrush(QPixmap(":/images/background.png"));
 
 
 }
@@ -250,7 +254,7 @@ void MainWindow::frog_genetarot()
 {
     if(frogs.size()==0)
     {
-        frogs.push_back(new frog(80,{1150,50},-150));
+        frogs.push_back(new frog(80,{1151-50,65},-150));
         scene->addItem(frogs.back()->lengua);
         scene->addItem(frogs.back()->lengua2);
         scene->addItem(frogs.back());
@@ -630,6 +634,7 @@ void MainWindow::set_life()
             delete_all();
             started=false;
             ui->progressBar->setValue(0);
+            scene->setBackgroundBrush(QPixmap(":/images/game over.png"));
 
         }
         for(int i =0; i<frogs.size();i++)
@@ -642,6 +647,12 @@ void MainWindow::set_life()
                 i--;
                 puntaje+=120;
             }
+        }
+        if(puntaje>puntajefrontera && Bees_spawn>5)
+        {
+            puntajefrontera+=150;
+            Abees_spawn--;
+            Bees_spawn--;
         }
         ui->lcdNumber->display(puntaje);
 }
@@ -690,6 +701,10 @@ void MainWindow::ADVANCE()
             scene->removeItem(frogs.at(i)->lengua2);
             frogs.at(i)->Advance(t);
             scene->addItem(frogs.at(i)->lengua2);
+            scene->removeItem(frogs.at(i)->lengua);
+            scene->addItem(frogs.at(i)->lengua);
+            scene->removeItem(frogs.at(i));
+            scene->addItem(frogs.at(i));
         }
         std::cout<<"avance t \n";
         for(int i =0;i!=tadpoles.size();i++)
@@ -718,6 +733,7 @@ void MainWindow::ADVANCE()
         }
         started=true;
         std::cout<<"setlife \n";
+        scene->setBackgroundBrush(QPixmap(":/images/background.png"));
         set_life();
 
 
@@ -743,11 +759,11 @@ void MainWindow::second()
         {
             platform_generator();
         }
-        if((5+time_passed)%13==0)
+        if((3+time_passed)%Abees_spawn==0)
         {
             Abee_genetarot();
         }
-        if((7+time_passed)%10==0)
+        if((2+time_passed)%Bees_spawn==0)
         {
             bee_genetarot();
         }

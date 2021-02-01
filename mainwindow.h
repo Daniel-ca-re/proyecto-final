@@ -16,6 +16,7 @@
 #include <iostream>
 #include <QTimer>
 #include <QGraphicsView>
+#include <QRectF>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -77,6 +78,10 @@ private:
     void floor_generator();
     void second();
     void bala_generator(float vx, float vy);
+
+    int Abees_spawn, Bees_spawn;
+
+    int puntajefrontera;
 
 
 

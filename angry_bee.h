@@ -12,6 +12,10 @@ public:
     angry_bee( float ra, std::array<float,2> p, float v);
     void Advance(float t,std::array<float,2> p);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget =nullptr);
+    int columnas,filas;
+    QPixmap *pixmap;
+    int c;
+    void set_sprite(float px);
 
 };
 

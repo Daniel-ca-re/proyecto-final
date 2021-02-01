@@ -36,15 +36,50 @@ void maty::left()
 
 void maty::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setBrush(Qt::darkYellow);
-    painter->drawEllipse(boundingRect());
+    painter->drawPixmap(-lx/2,-ly/2,*pixmap,columnas,filas,lx,ly);
+}
+
+void maty::sprintstate()
+{
+    if (vel[1]>0)
+    {
+        columnas=0;
+        filas=0;
+    }
+    else if (vel[1]<-1)
+    {
+        columnas=1*lx;
+        filas=0;
+    }
+    else if (vel[0]>0)
+    {
+        columnas=0*lx;
+        filas=2*ly;
+    }
+    else if (vel[0]<0)
+    {
+        columnas=1*lx;
+        filas=2*ly;
+    }
+    else
+    {
+        columnas=0;
+        filas=1*ly;
+    }
+}
+
+void maty::Advance(float t)
+{
+    base::Advance(t);
+    sprintstate();
+    this->update(-lx/2,-ly/2,lx,ly);
 }
 
 maty::maty(float d, float h, std::array<float, 2> p, float ay)
 {
 
-    lx=d;
-    ly=h;
+    lx=27*2;
+    ly=36*2;
     pos=p;
     ace[0]=0;
     ace[1]=ay;
@@ -53,4 +88,7 @@ maty::maty(float d, float h, std::array<float, 2> p, float ay)
     ry=ly/2;
     rx=lx/2;
     life=100;
+    columnas=0;
+    filas=1*ly;
+    pixmap= new QPixmap(":/images/tarzan_png.png");
 }

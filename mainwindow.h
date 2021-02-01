@@ -58,6 +58,7 @@ private:
     QMediaPlayer * theme;
     QMediaPlayer * jump;
     QMediaPlayer * hit;
+    QMediaPlayer * gethit;
 
 
     void get_started();

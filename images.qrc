@@ -13,5 +13,6 @@
         <file>sounds/lanzamiento.mp3</file>
         <file>sounds/song.mp3</file>
         <file>BD/Scores.txt</file>
+        <file>sounds/GETHIT.mp3</file>
     </qresource>
 </RCC>

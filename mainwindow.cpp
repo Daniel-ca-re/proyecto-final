@@ -46,6 +46,9 @@ MainWindow::MainWindow(QWidget *parent)
     hit= new QMediaPlayer();
     hit->setMedia(QUrl("qrc:/sounds/hit.mp3"));
 
+    gethit= new QMediaPlayer();
+    gethit->setMedia(QUrl("qrc:/sounds/GETHIT.mp3"));
+
 
 
 
@@ -584,6 +587,8 @@ void MainWindow::player_collitions()
     {
         if(players.at(0)->collidesWithItem(Abees.at(i)))
         {
+            gethit->stop();
+            gethit->play();
             scene->removeItem(Abees.at(i));
             Abees.removeAt(i);
             i--;
@@ -597,6 +602,8 @@ void MainWindow::player_collitions()
     {
         if(players.at(0)->collidesWithItem(bees.at(i)))
         {
+            gethit->stop();
+            gethit->play();
             scene->removeItem(bees.at(i));
             bees.removeAt(i);
             i--;
@@ -609,6 +616,8 @@ void MainWindow::player_collitions()
     {
         if(players.at(0)->collidesWithItem(tadpoles.at(i)))
         {
+            gethit->stop();
+            gethit->play();
             scene->removeItem(tadpoles.at(i));
             tadpoles.removeAt(i);
             i--;
@@ -621,6 +630,8 @@ void MainWindow::player_collitions()
     {
         if(players.at(0)->collidesWithItem(frogs.at(i)->lengua))
         {
+            gethit->stop();
+            gethit->play();
             auto vel=players.at(0)->getvel();
             players.at(0)->life-=5;
             if('a'==frogs.at(i)->lengua->where_is_it(players.at(0)->getpos()))
@@ -658,12 +669,13 @@ void MainWindow::set_life()
         ui->progressBar->setValue(players.at(0)->life);
         if (players.at(0)->life<=0)
         {
+            started=false;
             theme->stop();
             losesound->play();
             scores.addnew(puntaje);
             scores.saveinfo();
             delete_all();
-            started=false;
+
             ui->progressBar->setValue(0);
             scene->setBackgroundBrush(QPixmap(":/images/game over.png"));
 
@@ -687,6 +699,10 @@ void MainWindow::set_life()
             Bees_spawn--;
         }
         ui->lcdNumber->display(puntaje);
+        scores.addnew(puntaje);
+        ui->lcdNumber_2->display(scores.info[0]);
+        ui->lcdNumber_3->display(scores.info[1]);
+        ui->lcdNumber_4->display(scores.info[2]);
 }
 
 void MainWindow::ADVANCE()

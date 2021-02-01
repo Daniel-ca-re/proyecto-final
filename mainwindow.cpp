@@ -31,6 +31,21 @@ MainWindow::MainWindow(QWidget *parent)
     Abees_spawn=13;
     puntajefrontera=150;
 
+    losesound= new QMediaPlayer();
+    losesound->setMedia(QUrl("qrc:/sounds/GAME OVER.mp3"));
+
+    theme= new QMediaPlayer();
+    theme->setMedia(QUrl("qrc:/sounds/song.mp3"));
+
+    jump= new QMediaPlayer();
+    jump->setMedia(QUrl("qrc:/sounds/jump.mp3"));
+
+    Throw= new QMediaPlayer();
+    Throw->setMedia(QUrl("qrc:/sounds/lanzamiento.mp3"));
+
+    hit= new QMediaPlayer();
+    hit->setMedia(QUrl("qrc:/sounds/hit.mp3"));
+
 
 
 
@@ -60,6 +75,7 @@ void MainWindow::keyPressEvent(QKeyEvent *evento)
 
         if(can_he_move())
         {
+            jump->play();
             players.at(0)->up();
         }
 
@@ -138,6 +154,8 @@ void MainWindow::Bhit()
         {
             if(balas.at(i)->collidesWithItem(bees.at(ii)))
             {
+                hit->stop();
+                hit->play();
                 scene->removeItem(balas.at(i));
                 scene->removeItem(bees.at(ii));
                 bees.removeAt(ii);
@@ -155,6 +173,8 @@ void MainWindow::Bhit()
         {
             if(balas.at(i)->collidesWithItem(Abees.at(ii)))
             {
+                hit->stop();
+                hit->play();
                 scene->removeItem(balas.at(i));
                 scene->removeItem(Abees.at(ii));
                 Abees.removeAt(ii);
@@ -172,6 +192,8 @@ void MainWindow::Bhit()
         {
             if(balas.at(i)->collidesWithItem(frogs.at(ii)))
             {
+                hit->stop();
+                hit->play();
                 scene->removeItem(balas.at(i));
                 frogs.at(ii)->life--;
                 balas.removeAt(i);
@@ -186,6 +208,8 @@ void MainWindow::Bhit()
         {
             if(balas.at(i)->collidesWithItem(frogs.at(ii)->lengua))
             {
+                hit->stop();
+                hit->play();
                 scene->removeItem(balas.at(i));
                 balas.removeAt(i);
                 i--;
@@ -199,6 +223,8 @@ void MainWindow::Bhit()
         {
             if(balas.at(i)->collidesWithItem(platforms.at(ii)))
             {
+                hit->stop();
+                hit->play();
                 scene->removeItem(balas.at(i));
                 balas.removeAt(i);
                 i--;
@@ -212,6 +238,8 @@ void MainWindow::Bhit()
         {
             if(balas.at(i)->collidesWithItem(floor.at(ii)))
             {
+                hit->stop();
+                hit->play();
                 scene->removeItem(balas.at(i));
                 balas.removeAt(i);
                 i--;
@@ -482,6 +510,7 @@ void MainWindow::start()
     scene->addItem(floor.back());
     platforms.push_back(new platform(230,10,{1200,150},{-1,0},'g'));
     scene->addItem(platforms.back());
+    theme->play();
 }
 
 void MainWindow::npc_collitions()
@@ -629,6 +658,8 @@ void MainWindow::set_life()
         ui->progressBar->setValue(players.at(0)->life);
         if (players.at(0)->life<=0)
         {
+            theme->stop();
+            losesound->play();
             scores.addnew(puntaje);
             scores.saveinfo();
             delete_all();
@@ -730,7 +761,7 @@ void MainWindow::second()
 {
 
 
-        time_passed=(++time_passed)%101;
+        time_passed=(++time_passed)%221;
         if(time_passed%1==0)
         {
             floor_generator();
@@ -755,10 +786,16 @@ void MainWindow::second()
         {
             frog_genetarot();
         }
+        if((time_passed)%220==0)
+        {
+            theme->play();
+        }
 }
 
 void MainWindow::bala_generator(float vx, float vy)
 {
+    Throw->stop();
+    Throw->play();
     balas.push_back(new bala(10, players.at(0)->getpos() , {vx,vy}));
     scene->addItem(balas.back());
 }

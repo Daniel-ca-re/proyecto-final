@@ -7,5 +7,11 @@
         <file>images/game over.png</file>
         <file>images/tarzan_png.png</file>
         <file>images/bala.png</file>
+        <file>sounds/GAME OVER.mp3</file>
+        <file>sounds/hit.mp3</file>
+        <file>sounds/jump.mp3</file>
+        <file>sounds/lanzamiento.mp3</file>
+        <file>sounds/song.mp3</file>
+        <file>BD/Scores.txt</file>
     </qresource>
 </RCC>

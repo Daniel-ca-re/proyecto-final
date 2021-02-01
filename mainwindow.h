@@ -17,6 +17,7 @@
 #include <QTimer>
 #include <QGraphicsView>
 #include <QRectF>
+#include <QMediaPlayer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -48,9 +49,15 @@ private:
     QList <tadpole*> tadpoles;
     QList <bala*> balas;
     QTimer * timer;
+    QTimer * timerM;
     QList <maty *> players;
     int puntaje;
     txtinfo scores;
+    QMediaPlayer * losesound;
+    QMediaPlayer * Throw;
+    QMediaPlayer * theme;
+    QMediaPlayer * jump;
+    QMediaPlayer * hit;
 
 
     void get_started();

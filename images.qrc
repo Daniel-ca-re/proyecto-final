@@ -14,5 +14,7 @@
         <file>sounds/song.mp3</file>
         <file>BD/Scores.txt</file>
         <file>sounds/GETHIT.mp3</file>
+        <file>images/agua.png</file>
+        <file>images/suelo.png</file>
     </qresource>
 </RCC>

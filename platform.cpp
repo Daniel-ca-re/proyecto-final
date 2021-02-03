@@ -9,24 +9,23 @@ void platform::Advance(float t)
 {
     base::Advance(t);
     fake_layer->setpos(pos[0],pos[1]+3);
+    this->update(0,0,lx,ly);
 }
 
 void platform::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     if (type=='w')
     {
-        painter->setBrush(Qt::blue);
-        painter->drawRect(boundingRect());
+        painter->drawPixmap(0,0,*agua,0,0,lx,ly);
     }
     else if(type=='g')
     {
-        painter->setBrush(Qt::green);
-        painter->drawRect(boundingRect());
+        painter->drawPixmap(0,0,*suelo,0,0,lx,ly);
     }
     else
     {
         painter->setBrush(Qt::magenta);
-        painter->drawRect(boundingRect());
+        painter->drawRect(friction_layer::boundingRect());
     }
 }
 
@@ -54,12 +53,17 @@ char platform::where_is_it(std::array<float, 2> p)
     }
 }
 
+QRectF platform::boundingRect() const
+{
+    return QRectF(0,0,lx,ly);
+}
+
 platform::platform(float l, float h, std::array<float, 2> p, std::array<float, 2> v, char t)
 {
     pos=p;
     vel=v;
     lx=l;
-    ly=h;
+    ly=10;
     setPos(pos[0],-pos[1]);
     p[1]+=3;
     fake_layer = new friction_layer(l,3,p);
@@ -68,5 +72,7 @@ platform::platform(float l, float h, std::array<float, 2> p, std::array<float, 2
     H=h;
     L=l;
     fake_layer->setpos(pos[0],pos[1]+3);
+    suelo= new QPixmap(":/images/suelo.png");
+    agua= new QPixmap(":/images/agua.png");
 
 }

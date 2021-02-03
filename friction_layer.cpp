@@ -7,7 +7,7 @@ friction_layer::friction_layer()
 
 QRectF friction_layer::boundingRect() const
 {
-    return QRectF(pos[0]/100000,-pos[1]/100000,lx,ly);
+    return QRectF(0,0,lx,ly);
 }
 
 void friction_layer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

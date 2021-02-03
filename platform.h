@@ -1,6 +1,7 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 #include "friction_layer.h"
+#include <QGraphicsItem>
 
 
 class platform : public friction_layer
@@ -17,6 +18,9 @@ public:
     float H;
     char type;
     float L;
+    QPixmap *suelo;
+    QPixmap *agua;
+    QRectF boundingRect() const;
 };
 
 #endif // PLATFORM_H
